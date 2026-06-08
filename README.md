@@ -1,25 +1,36 @@
 # ShineParts
 
-ShineParts is a web system modernization project focused on backend consolidation, authentication improvements, API organization, and system reliability.
+ShineParts is a web system modernization project focused on backend consolidation, API refactoring, authentication improvements, database consistency, and system reliability.
 
 The project migrated from a duplicated backend structure with Flask and Node.js running in parallel to a single, more secure and maintainable Node.js/Express backend architecture.
 
-## Overview
+## Problem Solved
 
-This repository documents the modernization of the ShineParts system, including backend refactoring, route improvements, authentication hardening, database initialization, CORS correction, and compatibility support for legacy routes.
-
-## Previous Architecture
-
-Before the migration, the system had two active backends running at the same time:
+The original system had two backend applications running at the same time:
 
 * Python/Flask backend: `backend/app.py`
 * Node.js/Express backend: `backend/server.js`
 
-This caused duplicated business rules, inconsistent routes, different behaviors for the same domain, weak input validation in some endpoints, and conflicts between routes, models, and the real SQLite schema.
+This created duplicated business rules, inconsistent API behavior, weak validation in some routes, authentication risks, database inconsistencies, and CORS issues affecting the frontend.
 
-The authentication flow was also less robust, and the frontend faced CORS issues due to blocked origins such as `localhost:3001`.
+The goal of the modernization was to reduce complexity, improve security, centralize backend logic, and make the system easier to maintain and evolve.
 
-## Migration Applied
+## Business Value
+
+This project demonstrates how backend modernization can improve a real system by:
+
+* Reducing duplicated backend logic
+* Improving authentication and authorization
+* Making API behavior more consistent
+* Improving database reliability
+* Reducing operational risk
+* Fixing frontend/backend communication issues
+* Preserving compatibility with legacy routes
+* Creating a clearer architecture for future development
+
+The result is a safer, simpler, and more maintainable backend foundation.
+
+## Modernization Overview
 
 ### 1. Unified Backend Architecture
 
@@ -61,8 +72,9 @@ The backend now includes:
 
 * Payload and parameter validation
 * Centralized error handling
-* More consistent HTTP responses: `400`, `401`, `403`, `404`, `409`, `500`
-* Upload limits and file type validation
+* Consistent HTTP responses: `400`, `401`, `403`, `404`, `409`, `500`
+* Upload limits
+* File type validation
 
 ### 5. Legacy Route Compatibility
 
@@ -125,6 +137,19 @@ backend/models/Product.js
 backend/models/Order.js
 backend/BACKEND_ARCHITECTURE.md
 ```
+
+## Tech Stack
+
+* Node.js
+* Express.js
+* SQLite
+* JWT
+* bcrypt
+* JavaScript
+* REST APIs
+* CORS
+* Vite
+* Legacy Flask compatibility
 
 ## How to Run
 
@@ -192,19 +217,24 @@ http://localhost:5000/api/health
 
 The application now runs with a single backend architecture, stronger authentication, improved API routes, better database handling, corrected CORS configuration, and reduced operational risk for future product evolution.
 
-## Tech Stack
+## What This Project Demonstrates
 
-* Node.js
-* Express.js
-* SQLite
-* JWT
-* bcrypt
-* JavaScript
-* REST APIs
-* CORS
-* Vite
-* Legacy Flask compatibility
+This project demonstrates:
 
-## Project Focus
+* Backend modernization
+* API refactoring
+* Authentication improvements
+* JWT-based access control
+* Password hashing with bcrypt
+* Database consistency improvements
+* Legacy system migration
+* CORS debugging
+* Route validation
+* Error handling
+* System architecture simplification
 
-This project demonstrates backend modernization, API refactoring, authentication improvements, database consistency, and system architecture simplification.
+## Portfolio Goal
+
+The goal of this project is to demonstrate practical backend engineering skills through the modernization of an existing system.
+
+It shows how backend architecture, authentication, database handling, API consistency, and legacy compatibility can be improved to make a system more secure, reliable, and maintainable.
