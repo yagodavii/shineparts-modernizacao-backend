@@ -1,240 +1,334 @@
 # ShineParts
 
-ShineParts is a web system modernization project focused on backend consolidation, API refactoring, authentication improvements, database consistency, and system reliability.
+Projeto de modernização de um sistema web com foco em **consolidação do backend, refatoração de APIs, autenticação, consistência de banco de dados, segurança e confiabilidade da aplicação**.
 
-The project migrated from a duplicated backend structure with Flask and Node.js running in parallel to a single, more secure and maintainable Node.js/Express backend architecture.
+O projeto migrou de uma arquitetura com dois backends executando em paralelo — Flask e Node.js — para uma arquitetura única baseada em **Node.js + Express**, reduzindo duplicidade de regras de negócio e tornando o sistema mais seguro, simples e sustentável.
 
-## Problem Solved
+---
 
-The original system had two backend applications running at the same time:
+## 🎯 Problema resolvido
 
-* Python/Flask backend: `backend/app.py`
-* Node.js/Express backend: `backend/server.js`
+O sistema original possuía duas aplicações backend funcionando simultaneamente:
 
-This created duplicated business rules, inconsistent API behavior, weak validation in some routes, authentication risks, database inconsistencies, and CORS issues affecting the frontend.
+- Python / Flask: `backend/app.py`
+- Node.js / Express: `backend/server.js`
 
-The goal of the modernization was to reduce complexity, improve security, centralize backend logic, and make the system easier to maintain and evolve.
+Essa estrutura gerava problemas como:
 
-## Business Value
+- Regras de negócio duplicadas
+- Comportamentos inconsistentes entre APIs
+- Validações incompletas em algumas rotas
+- Riscos relacionados à autenticação
+- Inconsistências no banco de dados
+- Problemas de CORS entre frontend e backend
+- Maior complexidade de manutenção
 
-This project demonstrates how backend modernization can improve a real system by:
+O objetivo da modernização foi reduzir essa complexidade, centralizar as regras de negócio, melhorar a segurança e criar uma base arquitetural mais simples para evolução futura.
 
-* Reducing duplicated backend logic
-* Improving authentication and authorization
-* Making API behavior more consistent
-* Improving database reliability
-* Reducing operational risk
-* Fixing frontend/backend communication issues
-* Preserving compatibility with legacy routes
-* Creating a clearer architecture for future development
+---
 
-The result is a safer, simpler, and more maintainable backend foundation.
+## 💼 Valor gerado
 
-## Modernization Overview
+A modernização trouxe melhorias importantes para o sistema:
 
-### 1. Unified Backend Architecture
+- Redução de lógica duplicada no backend
+- Melhoria nos mecanismos de autenticação e autorização
+- Maior consistência nas APIs
+- Melhoria na confiabilidade do banco de dados
+- Redução de riscos operacionais
+- Correção de problemas de comunicação entre frontend e backend
+- Preservação de compatibilidade com rotas legadas
+- Arquitetura mais clara e sustentável para futuras evoluções
 
-The official backend was defined as Node.js with Express.
+O resultado foi uma base backend mais segura, confiável e fácil de manter.
 
-* Official API entry point: `backend/server.js`
-* API base URL: `http://localhost:5000/api`
-* Flask was marked as legacy to avoid conflicts and confusion
+---
 
-### 2. Flask Legacy Compatibility
+## 🏗️ Modernização da arquitetura
 
-The Flask backend was deprecated and converted into a legacy marker.
+### 1. Unificação do backend
 
-Requests to `/api/*` through Flask now return `410 Gone`, instructing users to use the Node.js backend instead.
+O backend oficial do sistema foi consolidado em **Node.js com Express**.
 
-The Flask port was also changed to `5050` to avoid conflict with the Node.js backend.
+- Entrada principal da API: `backend/server.js`
+- Base da API: `http://localhost:5000/api`
+- O backend Flask passou a ser considerado legado
 
-### 3. Security and Authentication
+Essa decisão reduziu conflitos e eliminou duplicidade de responsabilidade entre os dois backends.
 
-Authentication was improved with:
+---
 
-* Login validation through the Node.js backend
-* JWT-based authentication
-* Password hashing with bcrypt
-* Legacy password migration when needed
-* Role-based authorization middleware for `admin`, `manager`, and `seller`
+### 2. Compatibilidade com o backend legado
 
-### 4. Improved API Routes
+O backend Flask foi descontinuado como aplicação principal e passou a funcionar apenas como marcador de legado.
 
-Several routes were improved with better validation and more consistent responses:
+Requisições realizadas para `/api/*` através do Flask passaram a retornar:
 
-* Products
-* Orders
-* Branches
-* Users
-* Settings
+`410 Gone`
 
-The backend now includes:
+A resposta orienta o uso do backend Node.js.
 
-* Payload and parameter validation
-* Centralized error handling
-* Consistent HTTP responses: `400`, `401`, `403`, `404`, `409`, `500`
-* Upload limits
-* File type validation
+A porta do Flask também foi alterada para:
 
-### 5. Legacy Route Compatibility
+`5050`
 
-To avoid breaking existing flows, compatibility routes were preserved:
+evitando conflito com o backend Node.js.
 
-```http
-POST /api/order
-POST /api/admin/products
-```
+---
 
-### 6. Chat and Intelligence Layer
+## 🔐 Segurança e autenticação
 
-The chat endpoint was integrated with:
+A autenticação da aplicação foi aprimorada com:
 
-```txt
-backend/brain/SaraBrain.js
-```
+- Autenticação através do backend Node.js
+- JWT para controle de sessão
+- Hash de senhas com bcrypt
+- Migração de senhas legadas quando necessário
+- Middleware de autorização baseado em perfis
+- Controle de acesso para administrador, gerente e vendedor
 
-It supports user context and current route context to provide more intelligent responses.
+Também foram adicionadas validações mais consistentes nas rotas protegidas.
 
-### 7. Database Improvements
+---
 
-Database initialization was centralized in:
+## 🔗 APIs
 
-```txt
-backend/database/index.js
-```
+Diversas rotas foram revisadas e melhoradas.
 
-Improvements included:
+Principais áreas:
 
-* `PRAGMA foreign_keys = ON`
-* `PRAGMA journal_mode = WAL`
-* Indexes for improved query performance
-* Default admin user ensured with hashed password
-* `backend/database/database.js` now points to the same database connection
+- Produtos
+- Pedidos
+- Filiais
+- Usuários
+- Configurações
 
-### 8. CORS Fix
+As APIs passaram a contar com:
 
-The backend now includes `http://localhost:3001` as an allowed origin.
+- Validação de payloads
+- Validação de parâmetros
+- Tratamento centralizado de erros
+- Respostas HTTP padronizadas
+- Limites de upload
+- Validação de tipos de arquivos
 
-This fixed the `403` error on:
+Principais códigos HTTP utilizados:
 
-```http
-OPTIONS /api/auth/login
-```
+- `400` — Bad Request
+- `401` — Unauthorized
+- `403` — Forbidden
+- `404` — Not Found
+- `409` — Conflict
+- `500` — Internal Server Error
 
-## Main Files Changed
+---
 
-```txt
-backend/server.js
-backend/app.py
-backend/database/index.js
-backend/database/database.js
-backend/middleware/auth.js
-backend/routes/auth.js
-backend/routes/products.js
-backend/routes/orders.js
-backend/models/User.js
-backend/models/Product.js
-backend/models/Order.js
-backend/BACKEND_ARCHITECTURE.md
-```
+## 🔄 Compatibilidade com rotas antigas
 
-## Tech Stack
+Para evitar quebra de funcionalidades existentes, algumas rotas legadas foram preservadas:
 
-* Node.js
-* Express.js
-* SQLite
-* JWT
-* bcrypt
-* JavaScript
-* REST APIs
-* CORS
-* Vite
-* Legacy Flask compatibility
+- `POST /api/order`
+- `POST /api/admin/products`
 
-## How to Run
+Isso permitiu modernizar a aplicação sem interromper fluxos já existentes.
+
+---
+
+## 🤖 Camada de inteligência
+
+O endpoint de chat foi integrado com:
+
+`backend/brain/SaraBrain.js`
+
+Essa camada utiliza contexto do usuário e da rota atual para fornecer respostas mais contextualizadas dentro da aplicação.
+
+---
+
+## 🗄️ Banco de dados
+
+A inicialização do banco foi centralizada em:
+
+`backend/database/index.js`
+
+Foram implementadas melhorias como:
+
+- `PRAGMA foreign_keys = ON`
+- `PRAGMA journal_mode = WAL`
+- Índices para melhoria de performance
+- Garantia de existência do usuário administrador
+- Senha administrativa armazenada com hash
+- Padronização da conexão com o banco
+
+O arquivo:
+
+`backend/database/database.js`
+
+também passou a utilizar a mesma conexão centralizada.
+
+---
+
+## 🌐 Correção de CORS
+
+O backend passou a permitir explicitamente a origem:
+
+`http://localhost:3001`
+
+Isso corrigiu erros `403` durante requisições de preflight, como:
+
+`OPTIONS /api/auth/login`
+
+---
+
+## 🛠️ Principais arquivos modificados
+
+- `backend/server.js`
+- `backend/app.py`
+- `backend/database/index.js`
+- `backend/database/database.js`
+- `backend/middleware/auth.js`
+- `backend/routes/auth.js`
+- `backend/routes/products.js`
+- `backend/routes/orders.js`
+- `backend/models/User.js`
+- `backend/models/Product.js`
+- `backend/models/Order.js`
+- `backend/BACKEND_ARCHITECTURE.md`
+
+---
+
+## 🚀 Stack utilizada
+
+- Node.js
+- Express.js
+- JavaScript
+- SQLite
+- REST APIs
+- JWT
+- bcrypt
+- CORS
+- Vite
+- Flask legado
+
+---
+
+## ▶️ Como executar
 
 ### Backend
 
-```bash
-cd backend
-npm install
-npm run dev
-```
+`cd backend`  
+`npm install`  
+`npm run dev`
 
 ### Frontend
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+`cd frontend`  
+`npm install`  
+`npm run dev`
 
-## URLs
+---
 
-```txt
-Frontend: http://localhost:5173
-API Health: http://localhost:5000/api/health
-```
+## 🌍 URLs locais
 
-## Default Credentials
+**Frontend:**  
+`http://localhost:5173`
 
-```txt
-Username: admin
-Password: admin
-```
+**Health Check da API:**  
+`http://localhost:5000/api/health`
 
-> Important: change the default credentials before using the system in any real environment.
+---
 
-## Troubleshooting
+## 🔑 Credenciais padrão
 
-### Vite is not recognized
+**Usuário:** `admin`  
+**Senha:** `admin`
 
-Run the following command inside the frontend folder:
+> ⚠️ Altere as credenciais padrão antes de utilizar o sistema em qualquer ambiente real.
 
-```bash
-npm install
-```
+---
 
-### Login returns 403 on OPTIONS request
+## 🧰 Troubleshooting
 
-Possible cause: CORS origin not allowed.
+### Vite não reconhecido
 
-Status: fixed by allowing `localhost:3001` in the backend.
+Execute dentro da pasta `frontend`:
 
-### Login fails with correct credentials
+`npm install`
 
-Try the following steps:
+---
 
-1. Clear `localStorage`, especially the `shineray_token` key
-2. Restart backend and frontend
-3. Confirm the backend is running at:
+### Login retorna 403 no OPTIONS
 
-```txt
-http://localhost:5000/api/health
-```
+Possível causa:
 
-## Migration Result
+Origem não permitida pelo CORS.
 
-The application now runs with a single backend architecture, stronger authentication, improved API routes, better database handling, corrected CORS configuration, and reduced operational risk for future product evolution.
+O problema foi corrigido permitindo:
 
-## What This Project Demonstrates
+`localhost:3001`
 
-This project demonstrates:
+no backend.
 
-* Backend modernization
-* API refactoring
-* Authentication improvements
-* JWT-based access control
-* Password hashing with bcrypt
-* Database consistency improvements
-* Legacy system migration
-* CORS debugging
-* Route validation
-* Error handling
-* System architecture simplification
+---
 
-## Portfolio Goal
+### Login falha mesmo com credenciais corretas
 
-The goal of this project is to demonstrate practical backend engineering skills through the modernization of an existing system.
+Tente:
 
-It shows how backend architecture, authentication, database handling, API consistency, and legacy compatibility can be improved to make a system more secure, reliable, and maintainable.
+1. Limpar o `localStorage`
+2. Remover especialmente a chave `shineray_token`
+3. Reiniciar backend e frontend
+4. Confirmar que a API está respondendo em:
+
+`http://localhost:5000/api/health`
+
+---
+
+## 📈 Resultado da modernização
+
+Após a modernização, a aplicação passou a operar com:
+
+- Backend centralizado
+- Autenticação mais segura
+- APIs mais consistentes
+- Melhor tratamento de erros
+- Banco de dados mais confiável
+- Configuração de CORS corrigida
+- Menor duplicidade de código
+- Menor risco operacional
+- Arquitetura mais simples para evolução futura
+
+---
+
+## 🧠 O que este projeto demonstra
+
+Este projeto demonstra experiência prática em:
+
+- Modernização de sistemas legados
+- Arquitetura backend
+- Refatoração de APIs
+- Desenvolvimento com Node.js
+- Autenticação JWT
+- Autorização baseada em perfis
+- Hash de senhas com bcrypt
+- Consistência de banco de dados
+- Debugging de CORS
+- Validação de rotas
+- Tratamento de erros
+- Integração frontend/backend
+- Migração de sistemas legados
+- Simplificação arquitetural
+- Segurança de aplicações
+
+---
+
+## 🎯 Objetivo do projeto
+
+O objetivo deste projeto é demonstrar como decisões de engenharia backend podem melhorar um sistema existente.
+
+A modernização mostra como arquitetura, autenticação, banco de dados, APIs e compatibilidade com sistemas legados podem ser trabalhados em conjunto para tornar uma aplicação:
+
+- Mais segura
+- Mais confiável
+- Mais simples
+- Mais sustentável
+- Mais fácil de evoluir
